@@ -1,9 +1,9 @@
 <?php
 @header("Content-Type: text/html; charset=utf-8",true);
 
-$year = (int) $_GET['year']>0?(int) $_GET['year']:date('Y');
-$month = (int) $_GET['month']>0?(int) $_GET['month']:date('m');
-$day = (int) $_GET['day']>0?(int) $_GET['day']:date('d');
+$ano = (int) $_GET['ano']>0?(int) $_GET['ano']:date('Y');
+$mes = (int) $_GET['mes']>0?(int) $_GET['mes']:date('m');
+$dia = (int) $_GET['dia']>0?(int) $_GET['dia']:date('d');
 
 function DOMinnerHTML(DOMNode $element) 
 { 
@@ -92,12 +92,12 @@ function cleanHTML($html){
 	
 	
 	
-	$year = (int) $_GET['year']>0?(int) $_GET['year']:date('Y');
-	$month = (int) $_GET['month']>0?(int) $_GET['month']:date('m');
-	$day = (int) $_GET['day']>0?(int) $_GET['day']:date('d');
+	$ano = (int) $_GET['ano']>0?(int) $_GET['ano']:date('Y');
+	$mes = (int) $_GET['mes']>0?(int) $_GET['mes']:date('m');
+	$dia = (int) $_GET['dia']>0?(int) $_GET['dia']:date('d');
 
 	return array(
-		'data'=> $year.'-'.$month.'-'.$day,
+		'data'=> $ano.'-'.$mes.'-'.$dia,
 		'titulo_dia'=> $titulo_dia,
 		'primeira_leit'=>array('titulo'=> $primeira_leit_titulo, 'texto'=> $primeira_leit),
 		'segunda_leit'=>array('titulo'=> $segunda_leit_titulo, 'texto'=> $segunda_leit),
@@ -110,9 +110,10 @@ function cleanHTML($html){
 
 
 
-$dados = getFileFromUrl('http://liturgiadayria.cnbb.org.br/app/user/user/UserView.php?year='.$year.'&month='.$month.'&day='.$day);
+$dados = getFileFromURL('http://liturgiadiaria.cnbb.org.br/app/user/user/UserView.php?ano='.$ano.'&mes='.$mes.'&dia='.$dia);
 $dados = cleanHTML($dados);
 $json =  json_encode($dados);
-echo $json;	
+echo $json;
+	//echo $_GET['callback']."(".$json.");";
 
 ?>
