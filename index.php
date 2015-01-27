@@ -66,7 +66,7 @@ function cleanHTML($html) {
     $dia = (int) $_GET['dia']>0?(int) $_GET['dia']:date('d');
 
     return array(
-        'data'=> $ano.'-'.$mes.'-'.$dia,
+        'data'=> sprintf("%04d-%02d-%02d", $ano, $mes, $dia),
         'titulo_dia'=> $titulo_dia,
         'primeira_leit'=>$primeiraLeitura->toArray(),
         'segunda_leit'=>$segundaLeitura->toArray(),
