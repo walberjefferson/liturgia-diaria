@@ -6,11 +6,9 @@
 class LeituraBuilder {
 
     private $leitura;
-    private $finder;
 
     public function LeituraBuilder(DOMElement $leitura) {
         $this->leitura = $leitura;
-        $this->finder = null;
     }
 
     public function gerar() {

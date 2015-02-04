@@ -1,70 +1,77 @@
 <?php
 
 class LiturgiaDiaria {
-    private $titulo;
     private $pagina;
-    private $data;
 
-    private $finder;
+    private $data;
+    private $titulo;
+    private $cor;
+    private $leiturasDoDia;
+    private $leiturasFacultativas;
 
     public function __construct($dia, $mes, $ano) {
         $this->pagina = new LiturgiaDiariaPage($dia, $mes, $ano);
+
         $this->data = sprintf("%04d-%02d-%02d", $ano, $mes, $dia);
+        $this->titulo = $this->pagina->getTitulo();
+        $this->cor = $this->pagina->getCor();
 
-        $this->finder = $this->inicializarFinder();
-
-        $this->titulo = $this->getTitulo($this->finder);
+        $this->inicializarLeituras();
     }
 
-    private function inicializarFinder() {
-        $html = $this->pagina->getHTML();
-        //$html = utf8_encode($html);
+    private function inicializarLeituras() {
+        $todasAsLeituras = $this->pagina->getLeituras();
 
-        $dom = new DOMDocument();
-        @$dom->loadHTML($html);
+        $titulosLeiturasFacultativas = $this->pagina->getTitulosLeiturasFacultativas();
 
-        return new DomXPath($dom);
+        $this->leiturasDoDia = [];
+        $this->leiturasFacultativas = [];
+
+        foreach ($todasAsLeituras as $leitura)
+            if ($this->isLeituraFacultativa($leitura, $titulosLeiturasFacultativas))
+                $this->leiturasFacultativas[] = $leitura;
+            else
+                $this->leiturasDoDia[] = $leitura;
     }
 
-    private function getTitulo(DomXPath $finder) {
-        return HTMLUtils::removeBreak($finder->query("//h2")[0]->nodeValue);
+    private function isLeituraFacultativa(Leitura $leitura, $titulosLeiturasFacultativas) {
+        $titulo = HTMLUtils::removeBreak($leitura->getTitulo()->nodeValue);
+        return in_array($titulo, $titulosLeiturasFacultativas);
     }
 
-    public function getLeituras() {
-        $leituras = [];
-        $leiturasDOM = $this->buscarLeituras($this->finder);
-
-        foreach($leiturasDOM as $leitura)
-            $leituras[] = (new LeituraBuilder($leitura))->gerar();
-
-        return $leituras;
+    public function getCor() {
+        return $this->cor;
     }
 
-    private function buscarLeituras(DomXPath $finder) {
-        //#corpo_leituras > div
-        $query = "descendant-or-self::*[@id = 'corpo_leituras']/div";
+    public function getLeiturasDoDia() {
+        return $this->leiturasDoDia;
+    }
 
-        $leituras = [];
-
-        foreach($finder->query($query) as $node)
-            $leituras[] = $node;
-
-        return $leituras;
+    public function getLeiturasFacultativas() {
+        return $this->leiturasFacultativas;
     }
 
     public function toArray() {
-        $leituras = [];
-
-        foreach ($this->getLeituras() as $leitura) {
-            $array = $leitura->toArray();
-            $leituras[$array["titulo"]] = $array["texto"];
-        }
+        $leiturasDoDia = $this->gerarArrayLeituras($this->getLeiturasDoDia());
+        $leiturasFacultativas = $this->gerarArrayLeituras($this->getLeiturasFacultativas());
 
         return array(
             'data'=> $this->data,
+            'cor'=> $this->cor,
             'titulo_dia'=> $this->titulo,
-            'leituras'=> $leituras
+            'leiturasDoDia'=> $leiturasDoDia,
+            'leiturasFacultativas'=> $leiturasFacultativas
         );
     }
 
+    private function gerarArrayLeituras($leituras) {
+        $retorno = [];
+
+        foreach ($leituras as $leitura) {
+            $array = $leitura->toArray();
+            $retorno[$array["titulo"]] = $array["texto"];
+        }
+
+        return $retorno;
+    }
 }

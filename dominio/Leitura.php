@@ -12,6 +12,14 @@ class Leitura {
         $this->texto = $texto;
     }
 
+    public function getTitulo() {
+        return $this->titulo;
+    }
+
+    public function getTexto() {
+        return $this->texto;
+    }
+
     public function toArray() {
         return array(
             'titulo'=> HTMLUtils::removeBreak($this->titulo->nodeValue),
