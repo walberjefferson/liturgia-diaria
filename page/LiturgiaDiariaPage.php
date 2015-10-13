@@ -23,13 +23,13 @@ class LiturgiaDiariaPage extends Page {
     }
 
     public function getTitulo() {
-        return HTMLUtils::removeBreak($this->finder->query("//h2")[0]->nodeValue);
+        return HTMLUtils::removeBreak($this->finder->query("//h2")->item(0)->nodeValue);
     }
 
     public function getCor() {
         //.container em
         $query = "descendant-or-self::*[contains(concat(' ', normalize-space(@class), ' '), ' container ')]/descendant::em";
-        return HTMLUtils::removeBreak($this->finder->query($query)[0]->nodeValue);
+        return HTMLUtils::removeBreak($this->finder->query($query)->item(0)->nodeValue);
     }
 
     public function getLeituras() {

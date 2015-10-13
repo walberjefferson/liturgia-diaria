@@ -16,7 +16,7 @@ class LeituraBuilder {
     }
 
     private function titulo() {
-        return $this->leitura->getElementsByTagName("h3")[0];
+        return $this->leitura->getElementsByTagName("h3")->item(0);
     }
 
     private function texto() {
@@ -24,6 +24,6 @@ class LeituraBuilder {
         //    print_r($node);
 
         // FIXME - O número [5] é sem sentido
-        return $this->leitura->childNodes[5];
+        return $this->leitura->childNodes->item(5);
     }
 }
